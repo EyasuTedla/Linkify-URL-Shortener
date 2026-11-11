@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
     if (passwordBytes < 8 || passwordBytes > 72) {
       return NextResponse.json(
-        { message: "Password must be between 8 and 72 bytes." },
+        { message: "Password must be atleast 8 characters." },
         { status: 400 }
       );
     }
