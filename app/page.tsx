@@ -1,3 +1,4 @@
+import UrlForm from "./url-form";
 import { auth } from "../auth";
 import { redirect } from "next/navigation";
 import { logoutAction } from "./actions";
@@ -33,6 +34,8 @@ export default async function HomePage() {
             User ID: {session.user.id}
           </p>
         </div>
+
+        <UrlForm />
 
         <form action={logoutAction}>
           <button
