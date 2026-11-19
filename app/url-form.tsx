@@ -12,7 +12,11 @@ interface ShortenedUrl {
   createdAt: string;
 }
 
-export default function UrlForm() {
+export default function UrlForm({
+  onUrlCreated,
+}: {
+  onUrlCreated: () => void;
+}) {  
   const [originalUrl, setOriginalUrl] = useState("");
   const [shortenedUrl, setShortenedUrl] =
     useState<ShortenedUrl | null>(null);
@@ -27,9 +31,9 @@ export default function UrlForm() {
 
     setError("");
     setShortenedUrl(null);
+    setOriginalUrl("");
     setCopied(false);
     setLoading(true);
-
     try {
       const response = await fetch("/api/urls", {
         method: "POST",
@@ -48,6 +52,7 @@ export default function UrlForm() {
 
       setShortenedUrl(data.url);
       setOriginalUrl("");
+      onUrlCreated();
     } catch {
       setError("Unable to connect to the server. Please try again.");
     } finally {

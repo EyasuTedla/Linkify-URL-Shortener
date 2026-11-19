@@ -1,7 +1,7 @@
-import UrlForm from "./url-form";
 import { auth } from "../auth";
 import { redirect } from "next/navigation";
 import { logoutAction } from "./actions";
+import UrlDashboard from "./url-dashboard";
 export default async function HomePage() {
   const session = await auth();
 
@@ -35,13 +35,11 @@ export default async function HomePage() {
           </p>
         </div>
 
-        <UrlForm />
-
+        <UrlDashboard />
         <form action={logoutAction}>
           <button
             type="submit"
-            className="rounded-md bg-black px-5 py-2 text-white"
-          >
+            className="rounded-md bg-black px-5 py-2 text-white">
             Sign out
           </button>
         </form>
