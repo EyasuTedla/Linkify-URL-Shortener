@@ -99,3 +99,58 @@ export async function POST(request: Request) {
     );
   }
 }
+
+
+export async function GET(request: Request) {
+  try {
+    // 1. Check authentication
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { message: "You must be logged in to view your URLs." },
+        { status: 401 }
+      );
+    }
+
+    // 2. Retrieve URLs belonging to the logged-in user
+    const urls = await prisma.url.findMany({
+      where: {
+        userId: session.user.id,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        originalUrl: true,
+        shortCode: true,
+        clicks: true,
+        createdAt: true,
+      },
+    });
+
+    // 3. Include the complete short URL in the response
+    const origin = new URL(request.url).origin;
+
+    const formattedUrls = urls.map((url) => ({
+      ...url,
+      shortUrl: `${origin}/${url.shortCode}`,
+    }));
+
+    // 4. Return the URLs
+    return NextResponse.json(
+      {
+        urls: formattedUrls,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("URL retrieval error:", error);
+
+    return NextResponse.json(
+      { message: "Something went wrong while retrieving your URLs." },
+      { status: 500 }
+    );
+  }
+}
